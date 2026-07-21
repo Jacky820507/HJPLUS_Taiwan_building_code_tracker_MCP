@@ -13,14 +13,28 @@ export class InterpretationScraper {
   private url = 'https://www.nlma.gov.tw/ch/titlelist/interpcomp';
 
   async init() {
-    this.browser = await chromium.launch({
-      headless: true,
-      args: [
-        '--disable-blink-features=AutomationControlled',
-        '--disable-logging',
-        '--log-level=3'
-      ]
-    });
+    try {
+      this.browser = await chromium.launch({
+        headless: true,
+        channel: 'chrome',
+        args: [
+          '--disable-blink-features=AutomationControlled',
+          '--disable-logging',
+          '--log-level=3'
+        ]
+      });
+    } catch (chromeError) {
+      console.error('Failed to launch local Chrome, trying MS Edge...', chromeError);
+      this.browser = await chromium.launch({
+        headless: true,
+        channel: 'msedge',
+        args: [
+          '--disable-blink-features=AutomationControlled',
+          '--disable-logging',
+          '--log-level=3'
+        ]
+      });
+    }
   }
 
   async close() {
