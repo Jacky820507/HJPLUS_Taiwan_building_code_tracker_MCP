@@ -5,7 +5,10 @@ import path from 'path';
 import { LawData, Article } from './types.js';
 
 const MOJ_URL = 'https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070115';
-const CACHE_FILE = path.join(process.cwd(), 'data', 'law_cache.json');
+// MCP clients may spawn this server with an arbitrary cwd (e.g. C:\Windows\system32),
+// so the cache path must anchor to the package directory, not process.cwd().
+const PACKAGE_ROOT = path.join(__dirname, '..');
+const CACHE_FILE = path.join(PACKAGE_ROOT, 'data', 'law_cache.json');
 
 export async function fetchLawData(forceRefresh = false): Promise<LawData> {
   if (!forceRefresh) {
